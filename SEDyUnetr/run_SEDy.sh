@@ -1,0 +1,8 @@
+
+
+
+python main_SEDyUnetr.py --model_name=unetr --res_block --num_samples=2 --logdir=trained_unetr --feature_size=16 --batch_size=2 --cache_num=100  --out_channels=14 --max_epochs=2500 --json_list=dataset_0.json --val_every=50 --save_checkpoint --optim_lr=1e-5 --lrschedule=warmup_cosine --infer_overlap=0.5  --data_dir=/data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/
+python predict_unetr.py  --network_name=unetr --res_block --organs_file=./networks/organs13BTCV.key --mdir=/work/00LocalGit/01PythonProjects/02MedicineImageProcessing/UNETR/SEDyUnetr/trained_models/ --pretrained_dir=unetr_task018 --logdir=/data3/predict_SEDyUnetr/runs/ --out_channels=14  --json_list=dataset_0.json --infer_overlap=0.5  --data_dir=/data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/
+
+python main_SEDyUnetr.py --model_name=SEDyUnetr --temp_epoch=50 --res_block --num_samples=2 --logdir=trained_SEDyUnetr --kernel_num=4  --feature_size=16 --batch_size=2 --cache_num=100  --out_channels=14 --max_epochs=2500 --json_list=dataset_0.json --val_every=50 --save_checkpoint --optim_lr=1e-5 --lrschedule=warmup_cosine --infer_overlap=0.5  --data_dir=/data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/
+python predict_unetr.py  --network_name=SEDyUnetr --dy_flg --res_block --feature_size=16  --kernel_num=4 --organs_file=./networks/organs13BTCV.key --mdir=/work/00LocalGit/01PythonProjects/02MedicineImageProcessing/UNETR/SEDyUnetr/trained_models/ --pretrained_dir=SEDyUnetr_task018 --logdir=/data3/predict_SEDyUnetr/runs/ --out_channels=14  --kernel_num=4 --json_list=dataset_0.json --infer_overlap=0.5  --data_dir=/data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/

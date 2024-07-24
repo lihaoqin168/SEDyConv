@@ -1,0 +1,21 @@
+step 1. prepare dataset and conversion it (dataset_conversion.md)
+ modify and run .py
+ python ./nnunet/dataset_conversion/UsingTest/Task018_BeyondCranialVaultAbdominalOrganSegmentation.py
+
+step 2. preprocess
+nnUNet_plan_and_preprocess -t 018 -pl2d None
+
+step 3. modify epochs
+#for short epoch
+modify ./nnunet/training/network_training/SEDynnUNetTrainerV2.py
+set self.max_num_epochs = 500
+
+step 6. run:
+nnUNet_train 3d_fullres SEDynnUNetTrainerV2 018 0
+
+step 7. predict:
+nnUNet_predict --disable_tta  -i /data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/imagesTs/ -o /data3/predict_nii_nnUnet/018/SEDynnUNetTrainerV2-018best -t 018 -m 3d_fullres -tr SEDynnUNetTrainerV2 -f 0 -chk model_best
+nnUNet_predict --disable_tta  -i /data4/nnUNet_raw_data_base/nnUNet_raw_data/Task018_AbdominalOrganSegmentation/imagesTs/ -o /data3/predict_nii_nnUnet/018/SEDynnUNetTrainerV2-018 -t 018 -m 3d_fullres -tr SEDynnUNetTrainerV2 -f 0
+
+step 8. evaluate:
+python export_execl_nii_calculate_metrics.py
