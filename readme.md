@@ -1,4 +1,3 @@
-# SEDyConv
 
 This repo holds code for SEDyConv: Spatially Enhanced Multi-dimensional Dynamic Convolution for Medical Multi-organ Segmentation in CTs
 
@@ -10,7 +9,7 @@ Automated multi-organ segmentation presents a considerable challenge owing to th
 
 3D dynamic convolution; Attention mechanism; Medical image segmentation; Multi-organ segmentation
 
-## Method
+## SEDyConv
 
 ![](./imgs/fig3.png)
 
