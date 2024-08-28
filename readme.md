@@ -14,7 +14,7 @@ Automated multi-organ segmentation presents a considerable challenge owing to th
 
 ![](./imgs/fig3.png)
 
-#### **Fig. 1.** Schematic of the convolution space on which our spatially enhanced multi-dimensional dynamic convolution (SEDyConv) operates. For clarity, consider the 2D convolution kernel and ignore the bias. (a) The output channel dimension; that is, the number of filter dimensions,(b) the input channel dimension,(c) the 2D spatial dimension of all filters, and (d) the 3D kernel space dimension of one filter. We first compute four type weights ${\alpha}_f$, ${\alpha}_c$, ${\alpha}_{sf}$ and ${\alpha}_{sc}$ for the original kernel ${W}$. Then, we dynamically combine the processed  with switches to generate the final $\hat{W}$. During this process, weights ${\alpha}_{sf}$ and ${\alpha}_{sc}$ are used to preserve the spatial properties and expand the convolutional kernel space into N dimensions.
+#### **Fig. 1.** Schematic of the convolution space on which our spatially enhanced multi-dimensional dynamic convolution (SEDyConv) operates. For clarity, consider the 2D convolution kernel and ignore the bias. (a) The output channel dimension; that is, the number of filter dimensions,(b) the input channel dimension,(c) the 2D spatial dimension of all filters, and (d) the 3D kernel space dimension of one filter. We first compute four type weights ${\alpha_f}$, ${\alpha_c}$, ${\alpha_{sf}}$ and ${\alpha_{sc}}$ for the original kernel ${W}$. Then, we dynamically combine the processed  with switches to generate the final $\hat{W}$. During this process, weights ${\alpha_{sf}}$ and ${\alpha_{sc}}$ are used to preserve the spatial properties and expand the convolutional kernel space into N dimensions.
 
 ![](./imgs/fig5.png)
 
