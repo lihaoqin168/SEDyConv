@@ -24,7 +24,7 @@ Automated multi-organ segmentation presents a considerable challenge owing to th
 
 ![](./imgs/fig6.png)
 
-#### **Fig. 3.** General architecture of multi-organ segmentation networks embedded with our dynamic convolutional module SEDyConv, covering CNN and ViT backbones. We also provide detailed implementations of two specific networks: SEDy-nnUNet, based on nnU-Net [7] with a pure CNN structure, and SEDy-Unetr, based on UNETR [25] with a hybrid CNN-Transformer structure.
+#### **Fig. 3.** General architecture of multi-organ segmentation networks embedded with our dynamic convolutional module SEDyConv, covering CNN and ViT backbones. We also provide detailed implementations of two specific networks: SEDy-nnUNet, based on nnU-Net<SUP>[1]</SUP> with a pure CNN structure, and SEDy-Unetr, based on UNETR<SUP>[2]</SUP> with a hybrid CNN-Transformer structure.
 
 We design a universal framework for 3D dynamic convolutional networks for multi-organ segmentation. As shown in Fig. 3, by replacing the static convolution layer with our 3D SEDyConv layer, the network maintains the original segmentation network structure while possessing dynamic properties.
 
@@ -42,7 +42,7 @@ The dashed line in Fig. 3 denotes the concatenation of the upsampled feature map
 
 We implemented our experiments based on the [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) and [UNETR](https://monai.io/research/unetr) frameworks on the open-source [PyTorch platform](http://pytorch.org/). Both nnU-Net and UNETR are classical 3D multi-organ segmentation frameworks, one based on a pure CNN structure and the other based on the ViT architecture.
 
-All models were trained from scratch on an NVIDIA 3090 24G GPU. To enhance the efficiency of the training process, we employed the temperature annealing strategy proposed in DyConv [13] for both frameworks.
+All models were trained from scratch on an NVIDIA 3090 24G GPU. To enhance the efficiency of the training process, we employed the temperature annealing strategy proposed in DyConv<SUP>[3]</SUP> for both frameworks.
 
 ## SEDy-nnUNet
 
@@ -52,9 +52,9 @@ All models were trained from scratch on an NVIDIA 3090 24G GPU. To enhance the e
 
 nnUNet is a segmentation network with a pure CNN architecture. The trained model relies on fixed convolutional kernel parameters, where each convolutional kernel extracts specific features from a given input. These fixed parameters imply that the convolutional kernels lack adaptability because they can not adjust to variations in the input data. By incorporating SEDyConv modules into the CNN layers, the model can dynamically adjust the output of each layer according to the input, thereby addressing important heterogeneities and potentially improving the final prediction results.
 
-Based on the general architecture of the multi-organ segmentation networks illustrated in Fig. 3, we developed a specific network named SEDy-nnUNet, which is detailed in Fig. 4. The initial layer incorporates two 1×3×3 static convolutional blocks, followed by four layers that include a standard 3×3×3 static convolution and a 3×3×3 dynamic convolutional block. The bottleneck layer comprises two dynamic convolutional blocks. Each convolutional block is equipped with instance normalization and a ReLU. Following the bottleneck layer, a generator computes parameter  for a dynamic switch. SEDy-nnUNet employs a deeply supervised approach [61] to expedite network convergence and generates four distinct output sizes during training.
+Based on the general architecture of the multi-organ segmentation networks illustrated in Fig. 3, we developed a specific network named SEDy-nnUNet, which is detailed in Fig. 4. The initial layer incorporates two 1×3×3 static convolutional blocks, followed by four layers that include a standard 3×3×3 static convolution and a 3×3×3 dynamic convolutional block. The bottleneck layer comprises two dynamic convolutional blocks. Each convolutional block is equipped with instance normalization and a ReLU. Following the bottleneck layer, a generator computes parameter  for a dynamic switch. SEDy-nnUNet employs a deeply supervised approach<SUP>[4]</SUP> to expedite network convergence and generates four distinct output sizes during training.
 
-As a trade-off between the runtime and reward, the models of SEDy-nnUNet were trained for 500 epochs, where one epoch was defined as an iteration over 125 mini-batches. We used the original stochastic gradient descent [62] optimizer with an initial learning rate of 1e-2, weight decay of 3e-5 and Nesterov momentum with µ = 0.99. The epochs and initial temperature for the temperature annealing strategy were set to 30 and 30, respectively.
+As a trade-off between the runtime and reward, the models of SEDy-nnUNet were trained for 500 epochs, where one epoch was defined as an iteration over 125 mini-batches. We used the original stochastic gradient descent<SUP>[5]</SUP> optimizer with an initial learning rate of 1e-2, weight decay of 3e-5 and Nesterov momentum with µ = 0.99. The epochs and initial temperature for the temperature annealing strategy were set to 30 and 30, respectively.
 
 ## SEDy-Unetr
 
@@ -62,6 +62,16 @@ As a trade-off between the runtime and reward, the models of SEDy-nnUNet were tr
 
 #### **Fig. 5.** Architecture of SEDy-Unetr for medical 3D CT images.
 
-As illustrated in Fig. 5, the input 3D volume is initially divided into a one-dimensional sequence with flattened patches. These patches are then projected onto a 768-dimensional embedding space through a linear layer. Additionally, a 768×216 learnable positional embedding is incorporated, and the resulting output is directed into Transformer blocks that encompass multi-head self-attention (MSA) and multi-layer perceptron (MLP) sublayers [63]. Four feature map representations $Z_l(l{\in}{3,6,9,12})$ are extracted from the Transformer blocks and reshaped into tensors of a consistent size 768×6×6×6. The output of the final layer $Z_12$ undergoes upsampling via a deconvolutional layer by a factor of two and is concatenated with the feature map of the preceding layer. In parallel, $Z_12$ is used to generate the switch parameter ${\beta}$. Following a structure similar to that of SEDy-nnUNet, the decoding path of SEDy-Unetr comprises successive dynamic convolutional layers. This connection process is iterated for all subsequent layers up to the original input resolution.
+As illustrated in Fig. 5, the input 3D volume is initially divided into a one-dimensional sequence with flattened patches. These patches are then projected onto a 768-dimensional embedding space through a linear layer. Additionally, a 768×216 learnable positional embedding is incorporated, and the resulting output is directed into Transformer blocks that encompass multi-head self-attention (MSA) and multi-layer perceptron (MLP) sublayers<SUP>[6]</SUP>. Four feature map representations $Z_l(l{\in}{3,6,9,12})$ are extracted from the Transformer blocks and reshaped into tensors of a consistent size 768×6×6×6. The output of the final layer $Z_12$ undergoes upsampling via a deconvolutional layer by a factor of two and is concatenated with the feature map of the preceding layer. In parallel, $Z_12$ is used to generate the switch parameter ${\beta}$. Following a structure similar to that of SEDy-nnUNet, the decoding path of SEDy-Unetr comprises successive dynamic convolutional layers. This connection process is iterated for all subsequent layers up to the original input resolution.
 
-The SEDy-Unetr models were trained for 2500 epochs. Every 20 epochs, the model loss and accuracy were inferred from the validation set to select the best model. During training, we employed a linear warm-up and cosine annealing learning rate scheduler for 30 warm-up epochs. We also used the AdamW optimizer [64] with an initial learning rate of 1e-4 and weight decay of 1e-5. The temperature epochs and initial temperature for the temperature annealing strategy were set to 150 and 30, respectively. During the inference process, the sliding window approach was applied with an overlap of 0.5 to complete the segmentation of a CT case.
+The SEDy-Unetr models were trained for 2500 epochs. Every 20 epochs, the model loss and accuracy were inferred from the validation set to select the best model. During training, we employed a linear warm-up and cosine annealing learning rate scheduler for 30 warm-up epochs. We also used the AdamW optimizer<SUP>[7]</SUP> with an initial learning rate of 1e-4 and weight decay of 1e-5. The temperature epochs and initial temperature for the temperature annealing strategy were set to 150 and 30, respectively. During the inference process, the sliding window approach was applied with an overlap of 0.5 to complete the segmentation of a CT case.
+
+- [1] [nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation](https://doi.org/10.1038/s41592-020-01008-z)
+- [2] [UNETR: Transformers for 3D Medical Image Segmentation](http://dx.doi.org/10.1109/WACV51458.2022.00181)
+- [3] [Dynamic Convolution: Attention over Convolution Kernels](https://doi.org/10.48550/arXiv.1912.03458)
+- [4] [Deeply-Supervised Nets](https://doi.org/10.48550/arXiv.1409.5185)
+- [5] [Stochastic Gradient Descent Tricks](https://doi.org/10.1007/978-3-642-35289-8_25)
+- [6] [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://doi.org/10.48550/arXiv.2010.11929)
+- [7] [Decoupled Weight Decay Regularization](https://doi.org/10.48550/arXiv.1711.05101)
+
+
